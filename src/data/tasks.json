@@ -7,6 +7,7 @@
     "assignees": ["👩", "👨"],
     "commentsCount": 2,
     "filesCount": 2,
+    "attachments": 2,
     "dueDate": "2025-08-10",
     "priority": "Low"
   },
@@ -18,6 +19,7 @@
     "assignees": ["👨", "👩"],
     "commentsCount": 2,
     "filesCount": 2,
+    "attachments": 2,
     "dueDate": "2025-08-10",
     "priority": "High"
   },
@@ -29,6 +31,18 @@
     "assignees": ["👨"],
     "commentsCount": 35,
     "filesCount": 243,
+    "attachments": 243,
+    "priority": "Low"
+  },
+  {
+    "id": "4",
+    "title": "Prototype",
+    "status": "Reject",
+    "tags": ["Research"],
+    "assignees": ["👨"],
+    "commentsCount": 35,
+    "filesCount": 243,
+    "attachments": 243,
     "priority": "Low"
   }
 ]

@@ -1,4 +1,3 @@
-// types/task.ts
 export type TaskStatus = "To Do" | "In Progress" | "Approved" | "Reject";
 
 export interface Task {
@@ -12,4 +11,5 @@ export interface Task {
   filesCount: number;
   dueDate?: string;
   priority: "Low" | "Medium" | "High";
+  attachments: number;
 }

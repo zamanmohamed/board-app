@@ -1,100 +1,92 @@
-"use client";
-
-import { cn } from "@/lib/utils";
 import { Task } from "@/types/task";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, MessageSquareText, Paperclip } from "lucide-react";
+import { useDraggable } from "@dnd-kit/core";
+import { GripVertical, MessageSquare, Paperclip } from "lucide-react";
 
-interface TaskCardProps {
+interface Props {
   task: Task;
 }
 
-const TaskCard = ({ task }: TaskCardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+export default function TaskCard({ task }: Props) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const priorityColor = {
-    Low: "text-green-600 bg-green-100",
-    Medium: "text-yellow-600 bg-yellow-100",
-    High: "text-red-600 bg-red-100",
+    transform: transform
+      ? `translate(${transform.x}px, ${transform.y}px)`
+      : undefined,
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
       {...listeners}
-      className={cn(
-        "bg-white rounded-lg shadow p-4 border hover:shadow-md cursor-pointer transition-all",
-        isDragging && "opacity-50 ring-2 ring-blue-400"
-      )}
+      {...attributes}
+      className="bg-white p-4 rounded-md shadow-sm border hover:shadow-md transition mb-3"
     >
-      <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-semibold text-gray-800">
-          {task.title}
-        </span>
+      {/* Title & Drag Handle */}
+      <div className="flex justify-between items-start mb-2">
+        <h4 className="font-semibold text-sm">{task.title}</h4>
         <GripVertical className="w-4 h-4 text-gray-400" />
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-1">
-        {task.tags.map((tag, idx) => (
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1 mb-2">
+        {task.tags?.map((tag) => (
           <span
-            key={idx}
-            className="text-[10px] px-2 py-0.5 bg-gray-100 rounded-full text-gray-600"
+            key={tag}
+            className="bg-gray-100 text-xs text-gray-600 px-2 py-0.5 rounded-full"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="mt-3 flex justify-between items-center">
+      {/* Priority & Due Date */}
+      <div className="flex items-center justify-between mb-2">
         <span
-          className={cn(
-            "text-[10px] px-2 py-0.5 rounded-full font-medium",
-            priorityColor[task.priority]
-          )}
+          className={`
+            text-xs font-medium px-2 py-0.5 rounded-full
+            ${
+              task.priority === "High"
+                ? "bg-red-100 text-red-600"
+                : task.priority === "Medium"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-green-100 text-green-700"
+            }
+          `}
         >
           {task.priority}
         </span>
-        <span className="text-[10px] text-gray-400">{task.dueDate}</span>
+
+        {task.dueDate && (
+          <span className="text-xs text-gray-400">{task.dueDate}</span>
+        )}
       </div>
 
-      <div className="mt-3 flex justify-between items-center text-xs text-gray-500">
-        <div className="flex items-center gap-1">
-          <MessageSquareText className="w-4 h-4" />
-          {task.commentsCount}
-          <Paperclip className="w-4 h-4 ml-3" />
-          {task.filesCount}
+      {/* Comments / Attachments / Assignees */}
+      <div className="flex items-center justify-between mt-2">
+        <div className="flex gap-3 text-gray-500 text-sm">
+          <span className="flex items-center gap-1">
+            <MessageSquare className="w-3.5 h-3.5" />
+            {task.commentsCount ?? 0}
+          </span>
+          <span className="flex items-center gap-1">
+            <Paperclip className="w-3.5 h-3.5" />
+            {task.attachments ?? 0}
+          </span>
         </div>
 
-        <div className="flex items-center -space-x-2">
-          {task.assignees.map((a, i) => (
-            <div
-              key={i}
-              className="w-6 h-6 rounded-full bg-blue-100 text-sm flex items-center justify-center border border-white text-blue-600"
-            >
-              {a}
-            </div>
+        {/* Assignees (use emoji or avatar images) */}
+        <div className="flex -space-x-1">
+          {task.assignees?.map((assignee, index) => (
+            <span key={index} className="text-base">
+              {assignee}
+            </span>
           ))}
         </div>
       </div>
     </div>
   );
-};
-
-export default TaskCard;
+}

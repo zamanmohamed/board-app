@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "title": "User interview",
+    "status": "To Do",
+    "tags": ["Research"],
+    "assignees": ["👩", "👨"],
+    "commentsCount": 2,
+    "filesCount": 2,
+    "dueDate": "2025-08-10",
+    "priority": "Low"
+  },
+  {
+    "id": "2",
+    "title": "UI Design",
+    "status": "In Progress",
+    "tags": ["Design"],
+    "assignees": ["👨", "👩"],
+    "commentsCount": 2,
+    "filesCount": 2,
+    "dueDate": "2025-08-10",
+    "priority": "High"
+  },
+  {
+    "id": "3",
+    "title": "Prototype",
+    "status": "Approved",
+    "tags": ["Research"],
+    "assignees": ["👨"],
+    "commentsCount": 35,
+    "filesCount": 243,
+    "priority": "Low"
+  }
+]

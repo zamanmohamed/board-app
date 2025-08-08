@@ -1,13 +1,23 @@
-// components/Layout/Topbar.tsx
 "use client";
 
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import SearchBar from "@/components/Board/SearchBar";
 
-const Topbar = () => {
+interface TopbarProps {
+  onMenuClick: () => void;
+}
+
+const Topbar = ({ onMenuClick }: TopbarProps) => {
   return (
     <header className="w-full flex justify-between items-center px-6 py-3 bg-white border-b">
-      <SearchBar />
+      <div className="flex items-center gap-3">
+        {/* Hamburger (only on mobile) */}
+        <button className="md:hidden" onClick={onMenuClick}>
+          <Menu className="w-5 h-5 text-gray-600" />
+        </button>
+        <SearchBar />
+      </div>
+
       <div className="flex items-center space-x-4">
         <button className="relative">
           <Bell className="w-5 h-5 text-gray-600" />

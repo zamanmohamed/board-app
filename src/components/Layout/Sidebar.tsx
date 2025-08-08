@@ -8,8 +8,14 @@ import {
   Users,
   MessageSquare,
   LogOut,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 const navItems = [
   { label: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -18,42 +24,66 @@ const navItems = [
   { label: "Team", href: "/team", icon: Users },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 min-h-screen bg-white border-r flex flex-col">
-      <div className="p-6 text-2xl font-bold tracking-tight text-blue-600">
-        Board App
-      </div>
+    <>
+      {/* 🔲 Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
 
-      <nav className="flex-1 px-4 py-2 space-y-1">
-        {navItems.map(({ label, href, icon: Icon }) => {
-          const isActive = pathname === href;
-          return (
-            <Link
-              key={label}
-              href={href}
-              className={cn(
-                "flex items-center px-3 py-2 rounded-md text-sm font-medium",
-                isActive
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              <Icon className="w-4 h-4 mr-2" />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+      <aside
+        className={cn(
+          "fixed z-50 md:static inset-y-0 left-0 w-64 bg-white border-r flex flex-col transform transition-transform duration-300",
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )}
+      >
+        {/* ⬇️ Add this wrapper with flex-col and justify-between */}
+        <div className="flex flex-col h-full justify-between flex-1">
+          <div>
+            <div className="p-6 flex justify-between items-center border-b md:justify-center">
+              <h1 className="text-2xl font-bold text-blue-600">Board App</h1>
+              <button onClick={onClose} className="md:hidden">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
 
-      <div className="p-4 border-t mt-auto">
-        <button className="flex items-center text-sm text-red-500 hover:underline">
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </button>
-      </div>
-    </aside>
+            <nav className="px-4 py-2 space-y-1">
+              {navItems.map(({ label, href, icon: Icon }) => {
+                const isActive = pathname === href;
+                return (
+                  <Link
+                    key={label}
+                    href={href}
+                    onClick={onClose}
+                    className={cn(
+                      "flex items-center px-3 py-2 rounded-md text-sm font-medium",
+                      isActive
+                        ? "bg-blue-100 text-blue-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    )}
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    {label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="p-4 border-t">
+            <button className="flex items-center text-sm text-red-500 hover:underline">
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

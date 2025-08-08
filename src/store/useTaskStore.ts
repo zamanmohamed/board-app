@@ -1,7 +1,7 @@
 // store/useTaskStore.ts
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { Task } from "@/types/task";
-import { persist } from "zustand/middleware";
 
 interface TaskStore {
   tasks: Task[];
@@ -26,7 +26,8 @@ export const useTaskStore = create<TaskStore>()(
         })),
     }),
     {
-      name: "board-app-tasks", // localStorage key
+      name: "task-store",
+      storage: createJSONStorage(() => localStorage),
     }
   )
 );

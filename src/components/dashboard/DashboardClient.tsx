@@ -1,4 +1,3 @@
-// app/dashboard/DashboardClient.tsx
 "use client";
 
 import {
@@ -9,22 +8,23 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useTaskStore } from "@/store/useTaskStore";
-import { useEffect } from "react";
+import { Task, TaskStatus } from "@/types/task";
 import Swimlane from "@/components/Board/Swimlane";
-import { Task } from "@/types/task";
+import { useRef } from "react";
 
 interface Props {
   initialTasks: Task[];
 }
 
 export default function DashboardClient({ initialTasks }: Props) {
-  const { setTasks, tasks, searchQuery, updateTaskStatus } = useTaskStore();
+  const hasHydrated = useRef(false);
+  const { tasks, setTasks, searchQuery, updateTaskStatus } = useTaskStore();
+  const statuses: TaskStatus[] = ["To Do", "In Progress", "Approved", "Reject"];
 
-  useEffect(() => {
-    if (tasks.length === 0) {
-      setTasks(initialTasks);
-    }
-  }, [initialTasks]);
+  if (!hasHydrated.current && tasks.length === 0) {
+    setTasks(initialTasks);
+    hasHydrated.current = true;
+  }
 
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -34,13 +34,8 @@ export default function DashboardClient({ initialTasks }: Props) {
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
-
     if (!over || active.id === over.id) return;
-
-    const taskId = active.id;
-    const newStatus = over.id;
-
-    updateTaskStatus(taskId, newStatus);
+    updateTaskStatus(active.id, over.id);
   };
 
   return (
@@ -50,7 +45,7 @@ export default function DashboardClient({ initialTasks }: Props) {
       onDragEnd={handleDragEnd}
     >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {["To Do", "In Progress", "Approved", "Reject"].map((status) => (
+        {statuses.map((status) => (
           <Swimlane
             key={status}
             status={status}

@@ -29,7 +29,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <>
-      {/* 🔲 Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"
@@ -43,7 +42,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
-        {/* ⬇️ Add this wrapper with flex-col and justify-between */}
         <div className="flex flex-col h-full justify-between flex-1">
           <div>
             <div className="p-6 flex justify-between items-center border-b md:justify-center">

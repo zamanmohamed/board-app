@@ -1,14 +1,16 @@
 // store/useTaskStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { Task } from "@/types/task";
+import type { Task, TaskStatus } from "@/types/task";
 
 interface TaskStore {
   tasks: Task[];
   searchQuery: string;
-  setSearchQuery: (query: string) => void;
+  hasHydrated: boolean;
+  setSearchQuery: (q: string) => void;
   setTasks: (tasks: Task[]) => void;
-  updateTaskStatus: (taskId: string, status: Task["status"]) => void;
+  updateTaskStatus: (taskId: string, status: TaskStatus) => void;
+  setHasHydrated: (v: boolean) => void;
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -16,18 +18,23 @@ export const useTaskStore = create<TaskStore>()(
     (set) => ({
       tasks: [],
       searchQuery: "",
-      setSearchQuery: (query) => set({ searchQuery: query }),
+      hasHydrated: false,
+      setHasHydrated: (v) => set({ hasHydrated: v }),
+      setSearchQuery: (q) => set({ searchQuery: q }),
       setTasks: (tasks) => set({ tasks }),
       updateTaskStatus: (taskId, status) =>
         set((state) => ({
-          tasks: state.tasks.map((task) =>
-            task.id === taskId ? { ...task, status } : task
+          tasks: state.tasks.map((t) =>
+            t.id === taskId ? { ...t, status } : t
           ),
         })),
     }),
     {
-      name: "task-store",
+      name: "board-app-tasks",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

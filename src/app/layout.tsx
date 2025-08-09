@@ -1,5 +1,3 @@
-// app/layout.tsx
-
 export const metadata = {
   title: "Board App",
   description: "Swimlane Dashboard with Next.js 15",

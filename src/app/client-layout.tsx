@@ -1,11 +1,14 @@
-// app/client-layout.tsx
 "use client";
 
 import { useState } from "react";
 import Topbar from "@/components/Layout/Topbar";
 import Sidebar from "@/components/Layout/Sidebar";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

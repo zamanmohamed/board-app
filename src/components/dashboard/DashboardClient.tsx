@@ -6,37 +6,41 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  type DragEndEvent,
 } from "@dnd-kit/core";
+import { useEffect } from "react";
 import { useTaskStore } from "@/store/useTaskStore";
-import { Task, TaskStatus } from "@/types/task";
 import Swimlane from "@/components/Board/Swimlane";
-import { useRef } from "react";
+import type { Task, TaskStatus } from "@/types/task";
 
 interface Props {
   initialTasks: Task[];
 }
 
 export default function DashboardClient({ initialTasks }: Props) {
-  const hasHydrated = useRef(false);
-  const { tasks, setTasks, searchQuery, updateTaskStatus } = useTaskStore();
-  const statuses: TaskStatus[] = ["To Do", "In Progress", "Approved", "Reject"];
+  const { tasks, setTasks, searchQuery, updateTaskStatus, hasHydrated } =
+    useTaskStore();
 
-  if (!hasHydrated.current && tasks.length === 0) {
-    setTasks(initialTasks);
-    hasHydrated.current = true;
-  }
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (useTaskStore.getState().tasks.length === 0) {
+      setTasks(initialTasks);
+    }
+  }, [hasHydrated, initialTasks, setTasks]);
 
   const sensors = useSensors(useSensor(PointerSensor));
-
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filtered = tasks.filter((t) =>
+    t.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const statuses: TaskStatus[] = ["To Do", "In Progress", "Approved", "Reject"];
 
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event;
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
     if (!over || active.id === over.id) return;
-    updateTaskStatus(active.id, over.id);
+    updateTaskStatus(String(active.id), String(over.id) as TaskStatus);
   };
+
+  if (!hasHydrated) return null;
 
   return (
     <DndContext
@@ -49,7 +53,7 @@ export default function DashboardClient({ initialTasks }: Props) {
           <Swimlane
             key={status}
             status={status}
-            tasks={filteredTasks.filter((t) => t.status === status)}
+            tasks={filtered.filter((t) => t.status === status)}
           />
         ))}
       </div>
